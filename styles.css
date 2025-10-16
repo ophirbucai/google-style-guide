@@ -275,8 +275,13 @@ img {
   width: 100%;
   height: 100%;
   background: radial-gradient(circle at var(--mouse-x, 0px) var(--mouse-y, 0px), transparent 10%, var(--dp-color-bg) 90%);
-  opacity: 0.25;
+  opacity: 0.05;
   pointer-events: none;
+  transition: opacity 0.3s ease-out;
+}
+
+.dp-hero-illustration:hover .dp-spotlight {
+  opacity: 0.25;
 }
 
 /* Responsive */
