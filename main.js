@@ -127,9 +127,11 @@
   };
 
   document.addEventListener('mousemove', handleMouseMove, { passive: true });
+  document.addEventListener('touchmove', handleMouseMove, { passive: true });
 
   // Initial render
-  renderCurrentItem();
-})();
+    renderCurrentItem();
+  })();
 
 
+  
