@@ -13,7 +13,7 @@
     'use utf-8 and <meta charset="utf-8">',
     'use semantic html for meaning, not presentation',
     'separate structure (html), presentation (css), and behavior (js)',
-    'avoid entity references (except for < and &)',
+    'avoid html entities (\'&nbsp;\' etc); escape only < and &',
     'omit optional tags when it helps readability',
     'use hyphenated class names (e.g., .video-id)',
     'avoid id selectors; prefer classes',
