@@ -1,5 +1,3 @@
-@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap);
-
 /* Root tokens */
 :root {
   --dp-font-sans: 'inter', system-ui, -apple-system, 'segoe ui', roboto, ubuntu, cantarell, 'noto sans', 'helvetica neue', arial, sans-serif;
@@ -141,6 +139,7 @@ img {
 }
 
 .dp-hero-illustration {
+  position: relative;
   display: grid;
   gap: var(--dp-space-2);
   margin: 0;
@@ -267,6 +266,17 @@ img {
   max-width: 1080px;
   opacity: 0.7;
   padding: var(--dp-space-6) var(--dp-space-4);
+}
+
+.dp-spotlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), transparent 10%, var(--dp-color-bg) 90%);
+  opacity: 0.25;
+  pointer-events: none;
 }
 
 /* Responsive */

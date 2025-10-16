@@ -37,12 +37,13 @@
   const nextBtn = document.querySelector('.dp-btn-next');
   const playBtn = document.querySelector('.dp-btn-play');
   const yearEl = document.getElementById('year');
+  const spotlightEl = document.querySelector('.dp-spotlight');
 
   if (yearEl) {
     yearEl.textContent = String(new Date().getFullYear());
   }
 
-  if (!screenEl || !prevBtn || !nextBtn || !playBtn) {
+  if (!screenEl || !prevBtn || !nextBtn || !playBtn || !spotlightEl) {
     return; // missing expected elements; abort behavior
   }
 
@@ -115,6 +116,17 @@
       togglePlay();
     }
   });
+
+  const handleMouseMove = e => {
+    const rect = spotlightEl.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    spotlightEl.style.setProperty('--mouse-x', `${x}px`);
+    spotlightEl.style.setProperty('--mouse-y', `${y}px`);
+  };
+
+  document.addEventListener('mousemove', handleMouseMove, { passive: true });
 
   // Initial render
   renderCurrentItem();

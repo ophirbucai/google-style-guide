@@ -1,23 +1,45 @@
 <!doctype html>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>developer portfolio</title>
-<link rel="stylesheet" href="styles.css">
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>developer portfolio</title>
 
-<meta name="description" content="a single-page developer portfolio demonstrating google html/css style guide principles with a structured, interactive header.">
-<link rel="canonical" href="https://ophirbucai.github.io/google-style-guide/">
+  <meta name="description" content="a single-page developer portfolio demonstrating google html/css style guide principles with a structured, interactive header.">
+  <link rel="canonical" href="https://ophirbucai.github.io/google-style-guide/">
 
-<meta property="og:title" content="developer portfolio">
-<meta property="og:description" content="a single-page developer portfolio demonstrating google html/css style guide principles with a structured, interactive header.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://ophirbucai.github.io/google-style-guide/">
-<meta property="og:image" content="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop">
+  <meta property="og:title" content="developer portfolio">
+  <meta property="og:description" content="a single-page developer portfolio demonstrating google html/css style guide principles with a structured, interactive header.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ophirbucai.github.io/google-style-guide/">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?q=80&w=1200&h=800&auto=format&fit=crop">
 
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="developer portfolio">
-<meta name="twitter:description" content="a single-page developer portfolio demonstrating google html/css style guide principles with a structured, interactive header.">
-<meta name="twitter:image" content="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop">
-<meta name="theme-color" content="#ffffff">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="developer portfolio">
+  <meta name="twitter:description" content="a single-page developer portfolio demonstrating google html/css style guide principles with a structured, interactive header.">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?q=80&w=1200&h=800&auto=format&fit=crop">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='4' ry='4' fill='%23fff'/><text x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-family='Arial, sans-serif' font-size='12' font-weight='bold' fill='%234285f4'>dp</text></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+  </noscript>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?q=80&w=1200&h=800&auto=format&fit=crop" imagesrcset="https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?q=80&w=480&h=320&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?q=80&w=768&h=512&auto=format&fit=crop 768w, https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?q=80&w=1200&h=800&auto=format&fit=crop 1200w" imagesizes="(max-width: 960px) 100vw, 50vw">
+</head>
+<body>
 
 <header class="dp-header">
   <nav class="dp-nav" aria-label="primary">
@@ -48,8 +70,19 @@
     </div>
 
     <figure class="dp-hero-illustration">
-      <img class="dp-hero-image" src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop" alt="abstract code on a screen.">
+      <img
+        class="dp-hero-image"
+        src="https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?q=80&w=1200&h=800&auto=format&fit=crop"
+        srcset="https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?q=80&w=480&h=320&auto=format&fit=crop 480w, https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?q=80&w=768&h=512&auto=format&fit=crop 768w, https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?q=80&w=1200&h=800&auto=format&fit=crop 1200w"
+        sizes="(max-width: 960px) 100vw, 50vw"
+        width="1200"
+        height="400"
+        decoding="async"
+        fetchpriority="high"
+        alt="abstract code on a screen."
+      >
       <figcaption class="dp-hero-caption">clean code starts with clean conventions</figcaption>
+      <div class="dp-spotlight"></div>
     </figure>
   </div>
 </header>
@@ -102,4 +135,5 @@
 
 <script src="main.js" defer></script>
 
-
+</body>
+</html>
