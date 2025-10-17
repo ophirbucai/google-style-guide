@@ -126,12 +126,18 @@
     spotlightEl.style.setProperty('--mouse-y', `${y}px`);
   };
 
-  document.addEventListener('mousemove', handleMouseMove, { passive: true });
-  document.addEventListener('touchmove', handleMouseMove, { passive: true });
+  const registerMouseMove = () => {
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
+  };
+  const unregisterMouseMove = () => {
+    document.removeEventListener('mousemove', handleMouseMove);
+  };
+  
+  spotlightEl.parentElement.addEventListener('mouseenter', registerMouseMove);
+  spotlightEl.parentElement.addEventListener('mouseleave', unregisterMouseMove);
 
   // Initial render
     renderCurrentItem();
   })();
 
 
-  
