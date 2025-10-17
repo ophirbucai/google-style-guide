@@ -264,7 +264,7 @@ img {
 .dp-footer-text {
   margin: 0 auto;
   max-width: 1080px;
-  opacity: 0.7;
+  color: var(--dp-color-subtle);
   padding: var(--dp-space-6) var(--dp-space-4);
 }
 
