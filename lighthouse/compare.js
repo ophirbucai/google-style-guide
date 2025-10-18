@@ -26,7 +26,9 @@ function parseArgs(argv) {
 
 function loadJson(p) {
   try {
-    return JSON.parse(fs.readFileSync(p, "utf8"));
+    const raw = JSON.parse(fs.readFileSync(p, "utf8"));
+    // Support both plain LHR and wrappers like { lhr: {...} }
+    return raw && raw.lhr ? raw.lhr : raw;
   } catch {
     return null;
   }
@@ -88,7 +90,7 @@ function table(rows) {
     ["TTI",  get(cur,"interactive"),                hasBaseline ? get(base,"interactive")                : null, ms,       deltaMs],
   ];
 
-  let md = `### Lighthouse Summary for ${url}\n\n`;
+  let md = "### 🗼 Lighthouse Comparison\n\n";
 
   if (hasBaseline) {
     // Category table with deltas
@@ -107,7 +109,7 @@ function table(rows) {
       name, fmt(cv), fmt(bv), dlt(cv, bv),
     ]);
     md += table([["Metric","Current","Main (baseline)","Δ"], ...metricRows]);
-    md += "_Note: ▲ indicates a worse value (higher time / lower score), ▼ indicates better._\n";
+    md += "> [!info] \n> The baseline is the main branch of the repository.\n";
   } else {
     // Current-only (no redundant baseline columns)
     md += "**Category Scores**\n\n";

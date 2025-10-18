@@ -76,6 +76,21 @@ jobs:
             --output=html \
             --output-path=./lighthouse/report
 
+      - name: Normalize Lighthouse JSON path
+        run: |
+          if [ -f lighthouse/report.json ]; then
+            echo "Found lighthouse/report.json"
+          else
+            JSON_FILE=$(ls -1 lighthouse/*.json 2>/dev/null | head -n 1 || true)
+            if [ -n "$JSON_FILE" ]; then
+              cp "$JSON_FILE" lighthouse/report.json
+              echo "Copied $JSON_FILE -> lighthouse/report.json"
+            else
+              echo "No Lighthouse JSON report found" >&2
+              exit 1
+            fi
+          fi
+
       - name: Download baseline Lighthouse artifact (main)
         if: ${{ github.event_name == 'pull_request' }}
         uses: dawidd6/action-download-artifact@v6
@@ -90,9 +105,11 @@ jobs:
       - name: Generate Lighthouse comparison comment
         if: ${{ github.event_name == 'pull_request' }}
         run: |
+          BASE_JSON=$(ls -1 baseline/**/*.json 2>/dev/null | head -n 1 || true)
+          echo "Baseline JSON: ${BASE_JSON:-none}"
           node lighthouse/compare.js \
             --current lighthouse/report.json \
-            --baseline baseline/lighthouse-report/lighthouse/report.json \
+            --baseline "${BASE_JSON}" \
             --out lighthouse/comment.md
 
       - name: Comment Lighthouse summary on PR (sticky)
