@@ -11,6 +11,10 @@ on:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
     concurrency:
       group: lighthouse-${{ github.event.pull_request.number || github.ref_name || github.ref }}
       cancel-in-progress: true
@@ -71,6 +75,32 @@ jobs:
             --output=json \
             --output=html \
             --output-path=./lighthouse/report
+
+      - name: Download baseline Lighthouse artifact (main)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: lighthouse.yml
+          workflow_conclusion: success
+          branch: main
+          name: lighthouse-report
+          path: baseline
+          if_no_artifact_found: ignore
+
+      - name: Generate Lighthouse comparison comment
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          node lighthouse/compare.js \
+            --current lighthouse/report.json \
+            --baseline baseline/lighthouse-report/lighthouse/report.json \
+            --out lighthouse/comment.md
+
+      - name: Comment Lighthouse summary on PR (sticky)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: lighthouse-summary
+          path: lighthouse/comment.md
 
       - name: Upload Lighthouse artifacts
         uses: actions/upload-artifact@v4
