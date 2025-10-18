@@ -3,11 +3,17 @@ name: Lighthouse (incognito)
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
   workflow_dispatch: {}
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    concurrency:
+      group: lighthouse-${{ github.event.pull_request.number || github.ref_name || github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
