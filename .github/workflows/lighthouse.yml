@@ -1,0 +1,129 @@
+name: Lighthouse (mobile, incognito)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch: {}
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
+    concurrency:
+      group: lighthouse-${{ github.event.pull_request.number || github.ref_name || github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps (optional)
+        if: ${{ hashFiles('package.json') != '' }}
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm i
+          fi
+
+      - name: Start xvfb
+        run: |
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+          Xvfb :99 -screen 0 1920x1080x24 &
+
+      - name: Compute merge-base with main
+        id: mb
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          git fetch origin main
+          echo "sha=$(git merge-base HEAD origin/main)" >> $GITHUB_OUTPUT
+
+      # ---------- Baseline (only on PRs) ----------
+      - name: Build & serve baseline
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          BASE_SHA="${{ steps.mb.outputs.sha }}"
+          git checkout "$BASE_SHA"
+          npm run build --if-present || true
+          if [ ! -d dist ]; then
+            mkdir -p dist
+            rsync -a --delete --exclude 'dist' --exclude '.git' --exclude '.github' --exclude 'node_modules' ./ dist/
+          fi
+          npx --yes http-server dist -p 8081 >/dev/null 2>&1 &
+          echo $! > baseline.pid
+          npx --yes wait-on http://localhost:8081
+
+      - name: Lighthouse (baseline)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          mkdir -p lighthouse
+          npx --yes lighthouse http://localhost:8081 \
+            --output=json \
+            --output-path=./lighthouse/baseline.json \
+            --emulated-form-factor=mobile \
+            --chrome-flags="--headless --disable-gpu --no-sandbox --incognito" \
+            --only-categories=performance,accessibility,best-practices,seo
+
+      - name: Stop baseline server
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          kill $(cat baseline.pid) || true
+
+      # ---------- Current (PR head or main) ----------
+      - name: Restore PR/head checkout
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          git checkout $GITHUB_SHA
+
+      - name: Build & serve current
+        run: |
+          npm run build --if-present || true
+          if [ ! -d dist ]; then
+            mkdir -p dist
+            rsync -a --delete --exclude 'dist' --exclude '.git' --exclude '.github' --exclude 'node_modules' ./ dist/
+          fi
+          npx --yes http-server dist -p 8080 >/dev/null 2>&1 &
+          echo $! > current.pid
+          npx --yes wait-on http://localhost:8080
+
+      - name: Lighthouse (current)
+        run: |
+          mkdir -p lighthouse
+          npx --yes lighthouse http://localhost:8080 \
+            --output=json \
+            --output-path=./lighthouse/current.json \
+            --emulated-form-factor=mobile \
+            --chrome-flags="--headless --disable-gpu --no-sandbox --incognito" \
+            --only-categories=performance,accessibility,best-practices,seo
+
+      - name: Stop current server
+        run: |
+          kill $(cat current.pid) || true
+
+      # ---------- Compare & comment (PRs only) ----------
+      - name: Generate markdown summary
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          node lighthouse/compare.js \
+            --current lighthouse/current.json \
+            --baseline lighthouse/baseline.json \
+            --out lighthouse/report.md || true
+
+      - name: Post sticky PR comment
+        if: ${{ github.event_name == 'pull_request' && hashFiles('lighthouse/report.md') != '' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: Lighthouse
+          path: lighthouse/report.md
