@@ -40,19 +40,19 @@ function deltaPts(a, b) {
   if (a == null || b == null) return "—";
   const d = Math.round(a*100) - Math.round(b*100);
   if (d === 0) return "±0";
-  return `${d > 0 ? "▲" : "▼"} ${Math.abs(d)}`;
+  return `${d > 0 ? "🔺" : "🔻"} ${Math.abs(d)}`;
 }
 function deltaMs(a, b) {
   if (a == null || b == null) return "—";
   const d = Math.round(a - b);
   if (d === 0) return "±0 ms";
-  return `${d > 0 ? "▲" : "▼"} ${Math.abs(d)} ms`;
+  return `${d > 0 ? "🔺" : "🔻"} ${Math.abs(d)} ms`;
 }
 function deltaCls(a, b) {
   if (a == null || b == null) return "—";
   const d = +(a - b).toFixed(3);
   if (d === 0) return "±0.000";
-  return `${d > 0 ? "▲" : "▼"} ${Math.abs(d).toFixed(3)}`;
+  return `${d > 0 ? "🔺" : "🔻"} ${Math.abs(d).toFixed(3)}`;
 }
 function get(lh, id) { return lh?.audits?.[id]?.numericValue; }
 function cats(lh) {
@@ -90,13 +90,13 @@ function table(rows) {
     ["TTI",  get(cur,"interactive"),                hasBaseline ? get(base,"interactive")                : null, ms,       deltaMs],
   ];
 
-  let md = "### 🗼 Lighthouse Comparison\n\n";
+  let md = "### Lighthouse Comparison (mobile, incognito) \n **baseline: main branch**\n\n";
 
   if (hasBaseline) {
     // Category table with deltas
-    md += "**Category Scores**\n\n";
+    md += "#### Category Scores\n\n";
     md += table([
-      ["Category","Current","Main (baseline)","Δ (pts)"],
+      ["Category","Current","Baseline","Points"],
       ["Performance", fmtScore(c.perf), fmtScore(b.perf), deltaPts(c.perf,b.perf)],
       ["Accessibility", fmtScore(c.a11y), fmtScore(b.a11y), deltaPts(c.a11y,b.a11y)],
       ["Best Practices", fmtScore(c.bp), fmtScore(b.bp), deltaPts(c.bp,b.bp)],
@@ -104,12 +104,13 @@ function table(rows) {
     ]);
 
     // Metrics with deltas
-    md += "\n**Key Metrics**\n\n";
+    md += "\n#### Key Metrics\n\n";
     const metricRows = metricDefs.map(([name, cv, bv, fmt, dlt]) => [
       name, fmt(cv), fmt(bv), dlt(cv, bv),
     ]);
-    md += table([["Metric","Current","Main (baseline)","Δ"], ...metricRows]);
-    md += "> [!info] \n> The baseline is the main branch of the repository.\n";
+    md += table([["Metric","Current","Baseline","Value"], ...metricRows]);
+    md += "\n> [!NOTE] \n> Lower values indicate an improvement over the baseline.\n";
+    
   } else {
     // Current-only (no redundant baseline columns)
     md += "**Category Scores**\n\n";
